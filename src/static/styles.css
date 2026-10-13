@@ -227,6 +227,10 @@ section h3 {
   text-align: center;
 }
 
+.my-activities-toggle {
+  margin-bottom: 16px;
+}
+
 /* New styles for participants section */
 .participants-container {
   margin-top: 15px;
@@ -305,6 +309,24 @@ section h3 {
 .register-student-toggle {
   width: 100%;
   margin-top: 16px;
+}
+
+.student-register,
+.student-login-prompt {
+  width: 100%;
+  margin-top: 16px;
+}
+
+button:disabled {
+  background-color: #e5e7eb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.activity-full,
+.registration-status {
+  margin-top: 16px;
+  font-weight: bold;
 }
 
 .register-form {

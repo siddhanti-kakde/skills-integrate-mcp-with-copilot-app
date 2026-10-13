@@ -13,7 +13,7 @@
           type="button"
           id="user-icon"
           class="user-icon"
-          aria-label="Teacher account"
+          aria-label="Account menu"
           aria-expanded="false"
           aria-controls="account-popover"
         >
@@ -24,6 +24,7 @@
         <div id="account-popover" class="account-popover hidden">
           <p id="account-status">Students can view activities and participants.</p>
           <button type="button" id="login-open">Teacher Login</button>
+          <button type="button" id="student-login-open">Student Login</button>
           <button type="button" id="logout-button" class="hidden">Log Out</button>
         </div>
       </div>
@@ -55,9 +56,52 @@
       </form>
     </dialog>
 
+    <dialog id="student-login-dialog" aria-labelledby="student-login-title">
+      <form id="student-login-form">
+        <h2 id="student-login-title">Student Login</h2>
+        <div class="form-group">
+          <label for="student-email">School email</label>
+          <input
+            type="email"
+            id="student-email"
+            required
+            autocomplete="username"
+          />
+        </div>
+        <div class="form-group">
+          <label for="student-password">Password</label>
+          <input
+            type="password"
+            id="student-password"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+        <p id="student-login-error" class="error hidden" role="alert"></p>
+        <div class="dialog-actions">
+          <button type="submit">Log In</button>
+          <button
+            type="button"
+            id="student-login-cancel"
+            class="secondary-button"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </dialog>
+
     <main>
       <section id="activities-container">
         <h3>Available Activities</h3>
+        <button
+          type="button"
+          id="my-activities-toggle"
+          class="my-activities-toggle hidden"
+          aria-pressed="false"
+        >
+          My Activities
+        </button>
         <div id="activity-filters" aria-label="Filter and sort activities">
           <div class="filter-group">
             <label for="category-filter">Category</label>
