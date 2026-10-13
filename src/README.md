@@ -5,7 +5,10 @@ A super simple FastAPI application that allows students to view and sign up for 
 ## Features
 
 - View all available extracurricular activities
+- Students can sign in with school-provisioned accounts and register themselves
+- Signed-in students can view their own registered activities
 - Teachers can sign up and unregister students after logging in
+- Activity capacity is enforced for student and teacher registration
 - Update the activity catalog by editing `activities.json`
 - Filter and sort activities, including by category and schedule
 
@@ -34,6 +37,11 @@ A super simple FastAPI application that allows students to view and sign up for 
 | GET    | `/activities`                                                     | Get all activities with their details and current participant count |
 | POST   | `/auth/login`                                                      | Log in as a teacher                                                 |
 | POST   | `/auth/logout`                                                     | Log out the current teacher                                         |
+| GET    | `/auth/student/session`                                             | Check the current student session                                  |
+| POST   | `/auth/student/login`                                               | Log in as a student                                                 |
+| POST   | `/auth/student/logout`                                              | Log out the current student                                         |
+| GET    | `/student/activities`                                               | Get activities for the signed-in student                            |
+| POST   | `/activities/{activity_name}/register`                              | Register the signed-in student for an activity                     |
 | POST   | `/activities/{activity_name}/signup?email=student@mergington.edu` | Teacher-only student signup                                         |
 | DELETE | `/activities/{activity_name}/unregister?email=student@mergington.edu` | Teacher-only student unregister                                     |
 
@@ -69,8 +77,43 @@ SameSite=Strict cookie, expire after eight hours, and are cleared when the
 server restarts. Set `COOKIE_SECURE=true` when serving the site over HTTPS.
 The session store is in memory, so run a single application worker.
 
-Only teacher-authenticated requests can modify activity registrations; students
-can continue to view activities and participant lists without logging in.
+## Student accounts
+
+Student accounts are provisioned by school staff in `students.json`, using
+lowercase school email addresses as keys. Store only PBKDF2-SHA256 password
+hashes and random salts, never plaintext passwords. Generate an account entry
+with this command; enter the assigned password at the hidden prompt and merge
+the printed entry into the `students` object in `students.json`:
+
+```sh
+python - <<'PY'
+import getpass
+import hashlib
+import json
+import secrets
+
+email = input("Student school email: ").strip().lower()
+password = getpass.getpass("Assigned password: ")
+salt = secrets.token_bytes(16)
+password_hash = hashlib.pbkdf2_hmac(
+    "sha256", password.encode("utf-8"), salt, 600000
+).hex()
+print(json.dumps({
+    email: {"salt": salt.hex(), "password_hash": password_hash}
+}, indent=2))
+PY
+```
+
+Restart the server after adding or changing student accounts. Student sessions
+use a separate HTTP-only, SameSite=Strict cookie, expire after eight hours, and
+are cleared when the server restarts. Set `COOKIE_SECURE=true` when serving over
+HTTPS. Student credentials are assigned out of band; the app does not provide
+student account creation or password reset.
+
+Students can view activities and participant lists without logging in. Only
+the signed-in student can self-register their own account, and teachers retain
+the ability to register or unregister any student. The server rejects duplicate
+and over-capacity registrations.
 
 ## Data Model
 
