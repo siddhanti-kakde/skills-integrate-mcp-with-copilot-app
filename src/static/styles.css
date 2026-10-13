@@ -23,6 +23,7 @@ body {
 }
 
 header {
+  position: relative;
   text-align: center;
   padding: 20px 0;
   margin-bottom: 30px;
@@ -31,21 +32,93 @@ header {
   border-radius: 5px;
 }
 
+.account-menu {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.user-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  padding: 8px;
+  border: 1px solid rgba(31, 41, 55, 0.25);
+  border-radius: 50%;
+  background: white;
+}
+
+.user-icon:hover {
+  background: var(--lime-light);
+}
+
+.user-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: #1f2937;
+}
+
+.account-popover {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: min(260px, calc(100vw - 48px));
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.account-popover p {
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
+}
+
+.account-popover button {
+  width: 100%;
+}
+
+dialog {
+  width: min(420px, calc(100% - 32px));
+  margin: auto;
+  padding: 24px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  color: var(--text);
+}
+
+dialog::backdrop {
+  background: rgba(31, 41, 55, 0.55);
+}
+
+dialog h2 {
+  margin-bottom: 20px;
+  color: var(--lime-dark);
+}
+
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.secondary-button {
+  background-color: #e5e7eb;
+}
+
+.secondary-button:hover {
+  background-color: #d1d5db;
+}
+
 header h1 {
   margin-bottom: 10px;
 }
 
 main {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: center;
-}
-
-@media (min-width: 768px) {
-  main {
-    grid-template-columns: 2fr 1fr;
-  }
+  display: block;
 }
 
 section {
@@ -54,7 +127,10 @@ section {
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px;
+}
+
+#activities-container {
+  max-width: none;
 }
 
 section h3 {
@@ -64,12 +140,64 @@ section h3 {
   color: var(--lime-dark);
 }
 
+#activity-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #d9e7c1;
+  border-radius: 5px;
+  background-color: var(--lime-light);
+}
+
+.filter-group {
+  min-width: 0;
+}
+
+.filter-group--search {
+  grid-column: 1 / -1;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--lime-dark);
+}
+
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid #cbd5bf;
+  border-radius: 4px;
+  background-color: white;
+  color: var(--text);
+  font-size: 15px;
+}
+
 .activity-card {
-  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #f9f9f9;
+}
+
+#activities-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  align-items: start;
+  gap: 16px;
+}
+
+.activity-card > .participants-container {
+  flex-grow: 1;
 }
 
 .activity-card h4 {
@@ -77,8 +205,26 @@ section h3 {
   color: var(--lime-dark);
 }
 
+.activity-category {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: var(--lime-light);
+  color: var(--lime-dark);
+  font-size: 13px;
+  font-weight: bold;
+}
+
 .activity-card p {
   margin-bottom: 8px;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 16px;
+  color: #666;
+  text-align: center;
 }
 
 /* New styles for participants section */
@@ -156,6 +302,43 @@ section h3 {
   font-size: 16px;
 }
 
+.register-student-toggle {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.register-form {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #d9e7c1;
+  border-radius: 5px;
+  background: var(--lime-light);
+}
+
+.register-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--lime-dark);
+}
+
+.register-form input {
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #cbd5bf;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.register-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 button {
   background-color: var(--lime);
   color: #1f2937;
@@ -199,9 +382,35 @@ button:hover {
   display: none;
 }
 
+dialog:not([open]) {
+  display: none;
+}
+
 footer {
   text-align: center;
   margin-top: 30px;
   padding: 20px;
   color: #666;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+
+  header {
+    padding-top: 58px;
+  }
+
+  section {
+    padding: 15px;
+  }
+
+  #activity-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-group--search {
+    grid-column: auto;
+  }
 }
